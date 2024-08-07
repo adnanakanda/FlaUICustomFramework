@@ -1,7 +1,7 @@
 ﻿using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Conditions;
 using FlaUI.Core.Tools;
-using Framework.FileUtils;
+using Framework.Utils;
 using System;
 
 namespace Framework.Base

@@ -1,8 +1,9 @@
 ﻿using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Conditions;
 using Framework.Base;
-using Framework.FileUtils;
+using Framework.Utils;
 using System;
+using System.Threading;
 
 namespace Framework.UIElementWrappers
 {
@@ -13,33 +14,37 @@ namespace Framework.UIElementWrappers
         {
         }
 
-        public void Invoke()
+        public void Invoke(int delayInMilliseconds = 0, bool highlight = false)
         {
             try
             {
+                if (delayInMilliseconds > 0)
+                {
+                    Logger.Info($"Waiting for {delayInMilliseconds} milliseconds after invoking button '{_elementName}'");
+                    Thread.Sleep(delayInMilliseconds);
+                }
+
                 var button = GetElement();
                 if (button == null)
                 {
                     throw new InvalidOperationException($"Button '{_elementName}' not found.");
                 }
 
+                if (highlight)
+                {
+                    Logger.Info($"Highlighting button: {_elementName}");
+                    button.DrawHighlight();
+                }
+
                 if (button.Patterns.Invoke.IsSupported)
                 {
-                    var invokePattern = button.Patterns.Invoke.Pattern;
                     Logger.Info($"Invoking button: {_elementName}");
-                    invokePattern.Invoke();
+                    button.Patterns.Invoke.Pattern.Invoke();
                 }
                 else if (button.Patterns.LegacyIAccessible.IsSupported)
                 {
-                    var legacyPattern = button.Patterns.LegacyIAccessible.Pattern;
                     Logger.Info($"Invoking button via LegacyIAccessible: {_elementName}");
-                    legacyPattern.DoDefaultAction();
-                }
-                else if (button.Patterns.SelectionItem.IsSupported)
-                {
-                    var selectionItemPattern = button.Patterns.SelectionItem.Pattern;
-                    Logger.Info($"Selecting button: {_elementName}");
-                    selectionItemPattern.Select();
+                    button.Patterns.LegacyIAccessible.Pattern.DoDefaultAction();
                 }
                 else
                 {

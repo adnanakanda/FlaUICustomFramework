@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Framework.FileUtils
+namespace Framework.Utils
 {
     public class JsonSettingsFile
     {

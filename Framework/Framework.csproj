@@ -175,10 +175,11 @@
   <ItemGroup>
     <Compile Include="App\WinManager.cs" />
     <Compile Include="Base\BaseElements.cs" />
-    <Compile Include="FileUtils\ConfigManager.cs" />
-    <Compile Include="FileUtils\JsonSettingsFile.cs" />
+    <Compile Include="Utils\ProcessHelper.cs" />
+    <Compile Include="Utils\ConfigManager.cs" />
+    <Compile Include="Utils\JsonSettingsFile.cs" />
     <Compile Include="App\AppManager.cs" />
-    <Compile Include="FileUtils\Logger.cs" />
+    <Compile Include="Utils\Logger.cs" />
     <Compile Include="Base\BasePage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scope.cs" />

@@ -1,7 +1,7 @@
 ﻿using NLog;
 using System;
 
-namespace Framework.FileUtils
+namespace Framework.Utils
 {
     public static class Logger
     {

@@ -1,5 +1,5 @@
 ﻿using FlaUI.Core.AutomationElements;
-using Framework.FileUtils;
+using Framework.Utils;
 using System;
 
 namespace Framework.App
@@ -15,9 +15,8 @@ namespace Framework.App
 
         public void Close()
         {
-            Logger.Info("Closing window");
+            Logger.Info("Window Closed");
             Window.Close();
-            Logger.Info("Window closed.");
         }
     }
 }

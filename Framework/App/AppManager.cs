@@ -2,7 +2,7 @@
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Tools;
 using FlaUI.UIA3;
-using Framework.FileUtils;
+using Framework.Utils;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -23,9 +23,10 @@ namespace Framework.App
 
         public AppManager Launch()
         {
+
             if (_application == null)
             {
-                Logger.Info("Launching application...");
+                Logger.Info("Launched application...");
                 _application = Application.Launch(_path);
 
                 if (_application == null || _application.HasExited)
@@ -36,19 +37,13 @@ namespace Framework.App
                 {
                     Logger.Info($"Application launched with process ID: {_application.ProcessId}");
                 }
-
-                var mainWindow = Retry.WhileNull(() => _application.GetMainWindow(_automation), TimeSpan.FromSeconds(20), TimeSpan.FromMilliseconds(500)).Result;
-                if (mainWindow == null)
-                {
-                    throw new InvalidOperationException("Main window not found after waiting.");
-                }
             }
             return this;
         }
 
         public AppManager Attach(string processName)
         {
-            var existingProcess = Process.GetProcessesByName(processName).FirstOrDefault();
+            var existingProcess = Retry.WhileNull(() => Process.GetProcessesByName(processName).FirstOrDefault()).Result;
 
             if (existingProcess != null)
             {
@@ -59,12 +54,6 @@ namespace Framework.App
                 {
                     throw new InvalidOperationException("Failed to attach to application.");
                 }
-
-                var mainWindow = Retry.WhileNull(() => _application.GetMainWindow(_automation), TimeSpan.FromSeconds(10)).Result;
-                if (mainWindow == null)
-                {
-                    throw new InvalidOperationException("Main window not found after waiting.");
-                }
             }
             else
             {
@@ -72,12 +61,6 @@ namespace Framework.App
             }
 
             return this;
-        }
-
-        public bool IsApplicationRunning(string processName)
-        {
-            var process = Process.GetProcessesByName(processName).FirstOrDefault();
-            return process != null;
         }
 
         public WinManager GetWindowByName(string windowName)
@@ -100,9 +83,10 @@ namespace Framework.App
             {
                 if (_application != null && !_application.HasExited)
                 {
-                    Logger.Info("Application closed");
+                    Logger.Info("Closing application...");
                     _application.Close();
-                    _application.Dispose();
+                    _application.WaitWhileBusy();
+                    _application.Kill();
                 }
                 else
                 {
@@ -112,10 +96,6 @@ namespace Framework.App
             catch (Exception ex)
             {
                 Logger.Error($"Error while closing application: {ex.Message}");
-            }
-            finally
-            {
-                _application = null;
             }
         }
     }
